@@ -1,0 +1,38 @@
+[
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "hashValue",
+        "type": "string"
+      }
+    ],
+    "name": "logHashValue",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewHashValue",
+    "type": "event"
+  }
+]

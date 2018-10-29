@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weisenheimer</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+</head>
+<body>
+
+<script>
+    (function () {
+        fetch("abi.json").then(function (resonse) {
+            return resonse.json();
+        }).then(function (abi) {
+            if (typeof window.ethereum !== 'undefined') {
+                window.web3 = new Web3(window.ethereum);
+                window.ethereum.enable().then(function () {
+                    const contract = new myWeb3.eth.Contract(abi, "0x245eDE9dac68B84f329e21024E0083ce432700f9");
+                    console.log(contract);
+                })
+            } else {
+                alert("No injected web3 found! Sorry!")
+            }
+        })
+    })()
+</script>
+</body>
+</html>
