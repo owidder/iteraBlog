@@ -32,7 +32,9 @@
         }).then(function (abi) {
             getWeb3().then(function(myWeb3) {
                 const contract = myWeb3.eth.contract(abi).at("0x245eDE9dac68B84f329e21024E0083ce432700f9");
-                console.log(contract);
+                contract.allEvents({fromBlock: 0, toBlock:"latest"}, function (err, events) {
+                    console.log(events);
+                })
             })
         })
     })()
