@@ -4,39 +4,30 @@
     <meta charset="UTF-8">
     <title>Weisenheimer</title>
 
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.35/dist/web3.js"></script>
 </head>
 <body>
 
 <script>
     (function () {
-        function getWeb3() {
-            if (window.ethereum) {
-                return new Promise(resolve => {
-                    const myWeb3 = new Web3(ethereum);
-                    ethereum.enable().then(function () {
-                        resolve(myWeb3);
+
+        const abi = "[{\"constant\":false,\"inputs\":[{\"name\":\"hashValue\",\"type\":\"string\"}],\"name\":\"logHashValue\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"\",\"type\":\"string\"},{\"indexed\":false,\"name\":\"\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"NewHashValue\",\"type\":\"event\"}]";
+
+        if (window.ethereum) {
+            const myWeb3 = new Web3(ethereum);
+            ethereum.enable().then(function () {
+                const contract = new myWeb3.eth.Contract(JSON.parse(abi), "0x245eDE9dac68B84f329e21024E0083ce432700f9");
+                contract.getPastEvents("NewHashValue", {fromBlock: 0, toBlock: 'latest'}, function (error, events) {
+                    events.forEach(function(event) {
+                        console.log(event.returnValues["0"])
+                        console.log(event.returnValues["1"])
+                        console.log(event.returnValues["2"])
                     })
                 });
-            } else if(window.web3) {
-                const myWeb3 = new Web3(web3.currentProvider);
-                return Promise.resolve(myWeb3);
-            } else {
-                return Promise.reject("No injected web3 found");
-            }
-        }
-
-
-        fetch("abi.json").then(function (resonse) {
-            return resonse.json();
-        }).then(function (abi) {
-            getWeb3().then(function(myWeb3) {
-                const contract = myWeb3.eth.contract(abi).at("0x245eDE9dac68B84f329e21024E0083ce432700f9");
-                contract.allEvents({fromBlock: 0, toBlock:"latest"}, function (err, events) {
-                    console.log(events);
-                })
             })
-        })
+        } else {
+            return Promise.reject("No injected web3 found");
+        }
     })()
 </script>
 </body>
