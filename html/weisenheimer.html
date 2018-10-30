@@ -10,18 +10,30 @@
 
 <script>
     (function () {
+        function getWeb3() {
+            if (window.ethereum) {
+                return new Promise(resolve => {
+                    const myWeb3 = new Web3(ethereum);
+                    ethereum.enable().then(function () {
+                        resolve(myWeb3);
+                    })
+                });
+            } else if(window.web3) {
+                const myWeb3 = new Web3(web3.currentProvider);
+                return Promise.resolve(myWeb3);
+            } else {
+                return Promise.reject("No injected web3 found");
+            }
+        }
+
+
         fetch("abi.json").then(function (resonse) {
             return resonse.json();
         }).then(function (abi) {
-            if (typeof window.ethereum !== 'undefined') {
-                window.web3 = new Web3(window.ethereum);
-                window.ethereum.enable().then(function () {
-                    const contract = new myWeb3.eth.Contract(abi, "0x245eDE9dac68B84f329e21024E0083ce432700f9");
-                    console.log(contract);
-                })
-            } else {
-                alert("No injected web3 found! Sorry!")
-            }
+            getWeb3().then(function(myWeb3) {
+                const contract = myWeb3.eth.contract(abi).at("0x245eDE9dac68B84f329e21024E0083ce432700f9");
+                console.log(contract);
+            })
         })
     })()
 </script>
