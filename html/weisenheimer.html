@@ -2,11 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
     <title>Weisenheimer</title>
 
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.35/dist/web3.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.35/dist/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js"></script>
+
+    <style>
+        table {
+            width: 100%;
+            /*table-layout: fixed;*/
+        }
+
+        td {
+            word-break: break-word;
+        }
+
+        td.hash {
+            width: 40%;
+        }
+
+        td.sender {
+            width: 30%;
+        }
+    </style>
 </head>
 <body>
+
+<div id="container"></div>
 
 <script>
     (function () {
@@ -18,15 +43,33 @@
             ethereum.enable().then(function () {
                 const contract = new myWeb3.eth.Contract(JSON.parse(abi), "0x245eDE9dac68B84f329e21024E0083ce432700f9");
                 contract.getPastEvents("NewHashValue", {fromBlock: 0, toBlock: 'latest'}, function (error, events) {
-                    events.forEach(function(event) {
-                        console.log(event.returnValues["0"])
-                        console.log(event.returnValues["1"])
-                        console.log(event.returnValues["2"])
-                    })
+                    const trhead = d3.select("#container")
+                        .append("table")
+                        .attr("class", "responsive-table")
+                        .append("thead")
+                        .append("tr");
+
+                    trhead.selectAll("th")
+                        .data(["Hash", "Sender", "Block no.", "Timestamp"])
+                        .enter()
+                        .append("th")
+                        .text(d => d);
+
+                    const tbody = d3.select("table").append("tbody");
+
+                    const trbody = tbody.selectAll("tr")
+                        .data(events)
+                        .enter()
+                        .append("tr");
+
+                    trbody.append("td").attr("class", "hash").text(d => d.returnValues["0"]);
+                    trbody.append("td").attr("class", "sender").text(d => d.returnValues["1"]);
+                    trbody.append("td").text(d => d.blockNumber);
+                    trbody.append("td").text(d => d.returnValues["2"]);
                 });
             })
         } else {
-            return Promise.reject("No injected web3 found");
+            return Promise.reject("No injected eteherum object found");
         }
     })()
 </script>
