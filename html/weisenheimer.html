@@ -26,10 +26,10 @@
                     console.log(events);
                     const data = events.map(function (event) {
                         return {
-                            sender: event.returnValues[1],
-                            blockno: event.blockNumber,
+                            blockNumber: event.blockNumber,
+                            senderAddress: event.returnValues[1],
                             timestamp: new Date(event.returnValues[2] * 1000).toDateString(),
-                            hashvalue: event.returnValues[0],
+                            hashValue: event.returnValues[0],
                         }
                     });
 
